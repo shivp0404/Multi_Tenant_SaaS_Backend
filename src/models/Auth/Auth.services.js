@@ -13,10 +13,11 @@ const AuthServices = {
         if(existed) throw new Error("Email is already existed");
 
         const hashedpassword = await bcryptSevices.hashPassword(data.password)
+        if(!hashedpassword) throw new Error ("Password is not hashed")
         
-        
-        AuthRepositories.createuser(data.name,data.email,hashedpassword)
-        
+        const user = AuthRepositories.createuser(data.name,data.email,hashedpassword)
+        if(!user) throw new Error("user is not created")
+
         return{
             message:"User Registerd succefully",
             }
