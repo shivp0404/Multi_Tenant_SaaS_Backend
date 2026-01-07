@@ -19,7 +19,7 @@ const AuthServices = {
         if(!user) throw new Error("user is not created")
 
         return{
-            message:"User Registerd successfully",
+            message:"User Registered successfully",
             }
     },
 }
