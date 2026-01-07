@@ -15,11 +15,11 @@ const AuthServices = {
         const hashedpassword = await bcryptSevices.hashPassword(data.password)
         if(!hashedpassword) throw new Error ("Password is not hashed")
         
-        const user = AuthRepositories.createuser(data.name,data.email,hashedpassword)
+        const user = await AuthRepositories.createuser(data.name,data.email,hashedpassword)
         if(!user) throw new Error("user is not created")
 
         return{
-            message:"User Registerd succefully",
+            message:"User Registerd successfully",
             }
     },
 }
