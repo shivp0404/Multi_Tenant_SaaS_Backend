@@ -13,12 +13,15 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jest": "^30.2.0",
     "jsonwebtoken": "^9.0.3",
     "nodemon": "^3.1.11",
     "pg": "^8.16.3",
-    "supertest": "^7.2.2"
+    "pino": "^10.1.0",
+    "supertest": "^7.2.2",
+    "uuid": "^13.0.0"
   }
 }
