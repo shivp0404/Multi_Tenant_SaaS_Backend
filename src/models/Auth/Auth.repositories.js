@@ -14,9 +14,14 @@ const AuthRepositories = {
         return user.rows[0] || null
     },
 
-    saveRefreshToken: async(RefreshToken,id)=>{
-      const user = await pool.query(AuthQueries.saveRefreshToken,[RefreshToken,id])
-      return user.rowCount
+    updateRefreshToken: async(RefreshToken,id)=>{
+      const user = await pool.query(AuthQueries.updateRefreshToken,[RefreshToken,id])
+      return user.rowCount 
+    },
+
+    findbyid: async(id)=>{
+      const user = await pool.query(AuthQueries.findbyid,[id])
+      return user.rows[0] || null
     }
 
   
