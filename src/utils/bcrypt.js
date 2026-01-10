@@ -8,8 +8,11 @@ const bcryptSevices ={
     comparePassword :(plainPassword,hashPassword)=>{
         return bcrypt.compare(plainPassword,hashPassword)
     },
-    hashRefreshToken: (password)=>{
-        return bcrypt.hash(password,10)
+    hashToken: (token)=>{
+        return bcrypt.hash(token,10)
+    },
+    compareToken :(plainToken,hashtoken)=>{
+        return bcrypt.compare(plainToken,hashtoken)
     },
 }
 

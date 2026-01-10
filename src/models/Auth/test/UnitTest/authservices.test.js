@@ -73,36 +73,6 @@ describe('Testing the registration service',()=>{
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 describe('Testing the login service',()=>{
     test('Should throw error if email is not defined', async()=>{
         const data ={password:"Test@m.com"}
@@ -159,5 +129,47 @@ describe('Testing the login service',()=>{
     })
 
     
+})
+
+describe("Testing the logout service",()=>{
+    test("User should logout successufully",async()=>{
+        const refreshToken = "RefreshToken";
+
+        jwtServices.decodeRefreshToken.mockResolvedValue({id:"1"})
+        AuthRepositories.findbyid.mockResolvedValue({id:"1",refreshToken:"RefreshToken"})
+        bcryptService.compareToken.mockResolvedValue(true)
+        AuthRepositories.updateRefreshToken.mockResolvedValue(1)
+
+        const result = await AuthServices.logout(refreshToken);
+
+        expect(result.message).toBe("done")
+    })
+
+    test("should throw error if decode not happen",async()=>{
+        const refreshToken = "RefreshToken";
+        jwtServices.decodeRefreshToken.mockResolvedValue(false)
+        await expect(AuthServices.logout(refreshToken)).rejects.toThrow('Decode does not work')
+    })
+
+    test("should throw error if verification fails",async()=>{
+        const refreshToken = "RefreshToken";
+
+        jwtServices.decodeRefreshToken.mockResolvedValue({id:"1"})
+        AuthRepositories.findbyid.mockResolvedValue({id:"1",refreshToken:"RefreshToken"})
+        bcryptService.compareToken.mockResolvedValue(false)
+        await expect(AuthServices.logout(refreshToken)).rejects.toThrow('Permission denied')
+    })
+    
+     test("should throw error when token is not updated",async()=>{
+        const refreshToken = "RefreshToken";
+
+        jwtServices.decodeRefreshToken.mockResolvedValue({id:"1"})
+        AuthRepositories.findbyid.mockResolvedValue({id:"1",refreshToken:"RefreshToken"})
+        bcryptService.compareToken.mockResolvedValue(true)
+        AuthRepositories.updateRefreshToken.mockResolvedValue(0)
+        await expect(AuthServices.logout(refreshToken)).rejects.toThrow('token is not updated')
+    })
+   
+
 })
 

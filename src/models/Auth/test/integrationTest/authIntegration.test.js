@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../../../../../app');
 const pool = require('../../../../../config/db');
+const { logout } = require('../../Auth.services');
 
 describe('Integration: User Registration', () => {
 
@@ -49,15 +50,11 @@ describe('Integration: User Registration', () => {
 
 });
 
-describe('Integration: User login', () => {
+describe('IntegrationTest: User login', () => {
 
   beforeEach(async () => {
   
     await pool.query('DELETE FROM users');
-  });
-
-  afterAll(async () => {
-    await pool.end(); 
   });
 
   test('POST /auth/login should login user successfully', async () => {
@@ -107,3 +104,58 @@ describe('Integration: User login', () => {
 
 
 });
+
+
+describe("Intergration test for logout",()=>{
+   beforeEach(async () => {
+  
+    await pool.query('DELETE FROM users');
+  });
+    afterAll(async () => {
+    await pool.end(); 
+  });
+
+  test("User Should logout successfully",async()=>{
+    const agent = request.agent(app)
+      const user = await agent.post('/auth/register').send({
+        name: 'test',
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      })
+
+    const login = await agent
+      .post('/auth/login')
+      .send({
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      });
+
+     const logout = await agent.post('/auth/logout')
+      
+     expect(logout.status).toBe(200)
+     expect(logout.body.message).toBe('done')
+
+    
+  })
+
+  test("Should throw error if cookie doesn't recieved",async()=>{
+    const agent = request.agent(app)
+      const user = await agent.post('/auth/register').send({
+        name: 'test',
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      })
+
+    const login = await agent
+      .post('/auth/login')
+      .send({
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      });
+
+     const logout = await agent.post('/auth/logout')
+      
+     expect(logout.status).toBe(200)
+     expect(logout.body.message).toBe('done')
+  })
+})

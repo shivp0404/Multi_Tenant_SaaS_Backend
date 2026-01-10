@@ -12,6 +12,10 @@ const jwtServices = {
       expiresIn: "1hr",
     });
   },
+
+  decodeRefreshToken:(RefreshToken)=>{
+    return jwt.verify(RefreshToken,process.env.REFRESH_TOKEN_SECRET)
+  }
 };
 
 module.exports = jwtServices;

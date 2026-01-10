@@ -2,6 +2,7 @@ const AuthRepositories = require('./Auth.repositories')
 const bcryptServices = require('../../utils/bcrypt')
 const AppError = require('../../utils/AppError')
 const jwtServices = require('../../utils/jwt')
+const bcryptSevices = require('../../utils/bcrypt')
 
 const AuthServices = {
     register:async(payloads)=>{
@@ -43,8 +44,8 @@ const AuthServices = {
         const RefreshToken = await jwtServices.generateRefreshToken(data);
         if(!RefreshToken) throw new AppError('Refresh token is not generated',400)
 
-        const hashRefreshToken = await bcryptServices.hashRefreshToken(RefreshToken)
-        const savetoken = await AuthRepositories.saveRefreshToken(hashRefreshToken,user.id)
+        const hashRefreshToken = await bcryptServices.hashToken(RefreshToken)
+        const savetoken = await AuthRepositories.updateRefreshToken(hashRefreshToken,user.id)
         if(savetoken === 0) throw new AppError("Token is not saved")
         
         return{
@@ -53,6 +54,22 @@ const AuthServices = {
             RefreshToken:RefreshToken
         }
         
+    },
+
+    logout:async(RefreshToken)=>{
+        const refreshToken = RefreshToken;
+        if(!refreshToken) throw new AppError("RefreshToken not found",400)
+        const decode = await jwtServices.decodeRefreshToken(refreshToken)
+        if(!decode) throw( new AppError("Decode does not work"))
+        const user = await AuthRepositories.findbyid(decode.id)
+        if(!user) throw new AppError("User does not exist",400);
+        const is_verified = await bcryptSevices.compareToken(refreshToken,user.refreshtoken)
+        if(!is_verified) throw new AppError("Permission denied",403)
+        const updatetoken = await AuthRepositories.updateRefreshToken(null,user.id)
+        if(updatetoken === 0 ) throw new AppError("token is not updated");
+        return{
+            message:"done"
+        }
     }
 }
 
