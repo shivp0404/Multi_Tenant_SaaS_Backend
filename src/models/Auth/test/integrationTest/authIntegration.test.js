@@ -5,13 +5,11 @@ const pool = require('../../../../../config/db');
 describe('Integration: User Registration', () => {
 
   beforeEach(async () => {
-    // Clean users table before each test
+  
     await pool.query('DELETE FROM users');
   });
 
-  afterAll(async () => {
-    await pool.end(); // close DB connection
-  });
+
 
   test('POST /auth/register should create user successfully', async () => {
     const response = await request(app)
@@ -47,6 +45,65 @@ describe('Integration: User Registration', () => {
   expect(response.status).toBe(500);
   expect(response.body.Error).toBe('Password is not defined');
 });
+
+
+});
+
+describe('Integration: User login', () => {
+
+  beforeEach(async () => {
+  
+    await pool.query('DELETE FROM users');
+  });
+
+  afterAll(async () => {
+    await pool.end(); 
+  });
+
+  test('POST /auth/login should login user successfully', async () => {
+
+    const user = await request(app).post('/auth/register').send({
+        name: 'test',
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      })
+
+    const response = await request(app)
+      .post('/auth/login')
+      .send({
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Login Successfull');
+    expect(response.body.data.name).toBe('test');
+    expect(response.body.data.accesstoken).toBeDefined()
+    
+
+  });
+
+  test('POST /auth/login should give error if email does not exist', async () => {
+
+    const user = await request(app).post('/auth/register').send({
+        name: 'test',
+        email: 'tese@mail.com',
+        password: 'TestPass123'
+      })
+
+    const response = await request(app)
+      .post('/auth/login')
+      .send({
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('User not found');
+  
+    
+
+  });
 
 
 });

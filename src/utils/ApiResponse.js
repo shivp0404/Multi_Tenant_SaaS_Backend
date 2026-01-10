@@ -1,6 +1,6 @@
 const ApiResponse = {
     success: (message="Ok",data={})=>{
-        return{success:true,message:message,data:{data}}
+        return{success:true,message:message,data:data}
     },
 
     error: (errormessage,errorStatusCode)=>{
