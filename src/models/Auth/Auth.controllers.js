@@ -25,6 +25,17 @@ const AuthControllers ={
             // Expires:"30m"
         })
         return res.status(200).json(ApiResponse.success("Login Successfull",{name:result.name,accesstoken:result.AccessToken}))
+    },
+    logout:async(req,res)=>{
+        const refreshToken = req.cookies.RefreshToken;
+        const result = await AuthServices.logout(refreshToken)
+        res.clearCookie("RefreshToken",{
+            httpOnly:true,
+            secure:false,
+            sameSite:"Lax",
+        })
+
+        res.status(200).json(ApiResponse.success(result.message));
     }
 
 }
