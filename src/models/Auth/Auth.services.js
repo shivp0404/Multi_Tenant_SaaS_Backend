@@ -39,9 +39,13 @@ const AuthServices = {
         const data =  {id:user.id,role:user.role,name:user.name}
         const AccessToken = await jwtServices.generateAccessToken(data);
         if(!AccessToken) throw new AppError("Access token is not generated",400)
-            
+               
         const RefreshToken = await jwtServices.generateRefreshToken(data);
         if(!RefreshToken) throw new AppError('Refresh token is not generated',400)
+
+        const hashRefreshToken = await bcryptServices.hashRefreshToken(RefreshToken)
+        const savetoken = await AuthRepositories.saveRefreshToken(hashRefreshToken,user.id)
+        if(savetoken === 0) throw new AppError("Token is not saved")
         
         return{
             name:user.name,

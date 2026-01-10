@@ -7,7 +7,10 @@ const bcryptSevices ={
     },
     comparePassword :(plainPassword,hashPassword)=>{
         return bcrypt.compare(plainPassword,hashPassword)
-    }
+    },
+    hashRefreshToken: (password)=>{
+        return bcrypt.hash(password,10)
+    },
 }
 
 module.exports = bcryptSevices
