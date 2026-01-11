@@ -36,6 +36,19 @@ const AuthControllers ={
         })
 
         res.status(200).json(ApiResponse.success(result.message));
+    },
+    refresh:async(req,res)=>{
+        const refreshToken = req.cookies.RefreshToken;
+        const result = await AuthServices.refresh(refreshToken);
+        
+        res.cookie("RefreshToken",result.RefreshToken,{
+            httpOnly:true,
+            secure:false,
+            sameSite:"Lax",
+            // Expires:"30m"
+        })
+        return res.status(200).json(ApiResponse.success("Refresh Successfull",{accesstoken:result.accessToken}))
+
     }
 
 }
