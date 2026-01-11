@@ -90,8 +90,8 @@ const AuthServices = {
   refresh: async (refreshToken) => {
     const Token = refreshToken;
     if (!Token) throw new AppError("Token not recieved", 400);
-    const decode = jwtServices.decodeRefreshToken(refreshToken);
-    if (!decode) throw new AppError("token doesn't  decrypt");
+    const decode = await jwtServices.decodeRefreshToken(refreshToken);
+    if (!decode) throw new AppError("token doesn't  decrypt",400);
     const user = await AuthRepositories.findbyid(decode.id);
     if (!user) throw new AppError("User not found", 400);
     const is_verified = await bcryptSevices.compareToken(
