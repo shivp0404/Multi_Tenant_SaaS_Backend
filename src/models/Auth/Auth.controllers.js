@@ -47,7 +47,7 @@ const AuthControllers ={
             sameSite:"Lax",
             // Expires:"30m"
         })
-        return res.status(200).json(ApiResponse.success("Refresh Successfull",{accesstoken:result.AccessToken}))
+        return res.status(200).json(ApiResponse.success("Refresh Successfull",{accesstoken:result.accessToken}))
 
     }
 
