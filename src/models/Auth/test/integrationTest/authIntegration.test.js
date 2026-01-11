@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../../../../../app');
 const pool = require('../../../../../config/db');
-const { logout } = require('../../Auth.services');
+
 
 describe('Integration: User Registration', () => {
 
@@ -111,9 +111,7 @@ describe("Intergration test for logout",()=>{
   
     await pool.query('DELETE FROM users');
   });
-    afterAll(async () => {
-    await pool.end(); 
-  });
+
 
   test("User Should logout successfully",async()=>{
     const agent = request.agent(app)
@@ -153,9 +151,66 @@ describe("Intergration test for logout",()=>{
         password: 'TestPass123'
       });
 
-     const logout = await agent.post('/auth/logout')
+     const logout = await request(app).post('/auth/logout')
       
-     expect(logout.status).toBe(200)
-     expect(logout.body.message).toBe('done')
+     expect(logout.status).toBe(400)
+     expect(logout.body.message).toBe("RefreshToken not found")
+  })
+})
+
+describe("Intergration test for refresh",()=>{
+   beforeEach(async () => {
+  
+    await pool.query('DELETE FROM users');
+  });
+    afterAll(async () => {
+    await pool.end(); 
+  });
+
+  test("User Should refresh successfully",async()=>{
+    const agent = request.agent(app)
+      const user = await agent.post('/auth/register').send({
+        name: 'test',
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      })
+
+    const login = await agent
+      .post('/auth/login')
+      .send({
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      });
+
+     const response = await agent.post('/auth/refresh')
+      
+     expect(response.status).toBe(200)
+     expect(response.body.success).toBe(true)
+     expect(response.body.message).toBe("Refresh Successfull")
+     expect(response.body.data.accesstoken).toBeDefined()
+
+    
+  })
+
+  test("Should throw error if cookie doesn't recieved",async()=>{
+    const agent = request.agent(app)
+      const user = await agent.post('/auth/register').send({
+        name: 'test',
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      })
+
+    const login = await agent
+      .post('/auth/login')
+      .send({
+        email: 'test@mail.com',
+        password: 'TestPass123'
+      });
+
+     const response = await request(app).post('/auth/refresh')
+      
+     expect(response.status).toBe(400)
+      expect(response.body.success).toBe(false)
+     expect(response.body.message).toBe("Token not recieved")
   })
 })
