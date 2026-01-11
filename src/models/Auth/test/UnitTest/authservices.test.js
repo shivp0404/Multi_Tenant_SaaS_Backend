@@ -104,6 +104,7 @@ describe('Testing the login service',()=>{
         jwtServices.generateAccessToken.mockResolvedValue(false)
         await expect(AuthServices.login(data)).rejects.toThrow('Access token is not generated')
     })
+
     test('Should throw error if RefreshToken is not generated',async()=>{
           const data ={email:"Test@m.com",password:"TestPassword"}
         AuthRepositories.findbyemail.mockResolvedValue(true)
@@ -115,14 +116,14 @@ describe('Testing the login service',()=>{
 
     test('User Successfully login',async()=>{
           const data ={email:"Test@m.com",password:"TestPassword"}
-        AuthRepositories.findbyemail.mockResolvedValue({name:"name",id:1,role:"member"})
+        AuthRepositories.findbyemail.mockResolvedValue({name:"name",id:1})
         bcryptService.comparePassword.mockResolvedValue(true)
         jwtServices.generateAccessToken.mockResolvedValue("AccessToken")
         jwtServices.generateRefreshToken.mockResolvedValue("RefreshToken")
         const result = await AuthServices.login(data)
         expect(AuthRepositories.findbyemail).toHaveBeenCalledWith("Test@m.com")
-        expect(jwtServices.generateAccessToken).toHaveBeenCalledWith({id:1,role:"member",name:"name"})
-        expect(jwtServices.generateRefreshToken).toHaveBeenCalledWith({id:1,role:"member",name:"name"})
+        expect(jwtServices.generateAccessToken).toHaveBeenCalledWith({id:1,name:"name"})
+        expect(jwtServices.generateRefreshToken).toHaveBeenCalledWith({id:1,name:"name"})
         expect(result.name).toBe("name")
         expect(result.AccessToken).toBe("AccessToken")
         expect(result.RefreshToken).toBe("RefreshToken")
@@ -141,6 +142,9 @@ describe("Testing the logout service",()=>{
         AuthRepositories.updateRefreshToken.mockResolvedValue(1)
 
         const result = await AuthServices.logout(refreshToken);
+         
+        expect(jwtServices.decodeRefreshToken).toHaveBeenCalledWith(refreshToken)
+        expect(AuthRepositories.findbyid).toHaveBeenCalledWith("1")
 
         expect(result.message).toBe("done")
     })
@@ -168,6 +172,55 @@ describe("Testing the logout service",()=>{
         bcryptService.compareToken.mockResolvedValue(true)
         AuthRepositories.updateRefreshToken.mockResolvedValue(0)
         await expect(AuthServices.logout(refreshToken)).rejects.toThrow('token is not updated')
+    })
+   
+
+})
+
+describe("Testing the Refresh service",()=>{
+    test("User should Refresh Token successufully",async()=>{
+        const refreshToken = "RefreshToken";
+
+        jwtServices.decodeRefreshToken.mockResolvedValue({id:"1"})
+        AuthRepositories.findbyid.mockResolvedValue({id:"1",refreshToken:"RefreshToken"})
+        bcryptService.compareToken.mockResolvedValue(true)
+        jwtServices.generateAccessToken.mockResolvedValue("updateAccessToken")
+        jwtServices.generateRefreshToken.mockResolvedValue("updateRefreshToken")
+        bcryptService.hashToken.mockResolvedValue('HashedToken')
+        AuthRepositories.updateRefreshToken.mockResolvedValue(1)
+
+        const result = await AuthServices.refresh(refreshToken);
+
+        expect(AuthRepositories.findbyemail).toHaveBeenCalledWith("Test@m.com")
+        expect(jwtServices.generateAccessToken).toHaveBeenCalledWith({id:1,name:"name"})
+        expect(jwtServices.generateRefreshToken).toHaveBeenCalledWith({id:1,name:"name"})
+        expect(result.accessToken).toBe("updateAccessToken")
+        expect(result.RefreshToken).toBe("updateRefreshToken")
+    })
+
+    test("should throw error if decode not happen",async()=>{
+        const refreshToken = "RefreshToken";
+        jwtServices.decodeRefreshToken.mockResolvedValue(false)
+        await expect(AuthServices.refresh(refreshToken)).rejects.toThrow("token doesn't  decrypt")
+    })
+
+    test("should throw error if verification fails",async()=>{
+        const refreshToken = "RefreshToken";
+
+        jwtServices.decodeRefreshToken.mockResolvedValue(true)
+        AuthRepositories.findbyid.mockResolvedValue(true)
+        bcryptService.compareToken.mockResolvedValue(false)
+        await expect(AuthServices.refresh(refreshToken)).rejects.toThrow('Permission Denied')
+    })
+    
+     test("should throw error when Accesstoken is not generated",async()=>{
+        const refreshToken = "RefreshToken";
+
+        jwtServices.decodeRefreshToken.mockResolvedValue(true)
+        AuthRepositories.findbyid.mockResolvedValue(true)
+        bcryptService.compareToken.mockResolvedValue(true)
+        jwtServices.generateAccessToken.mockResolvedValue(false)
+        await expect(AuthServices.refresh(refreshToken)).rejects.toThrow("New Access Token is not generated")
     })
    
 
