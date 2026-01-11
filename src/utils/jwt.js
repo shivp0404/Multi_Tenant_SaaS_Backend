@@ -15,6 +15,9 @@ const jwtServices = {
 
   decodeRefreshToken:(RefreshToken)=>{
     return jwt.verify(RefreshToken,process.env.REFRESH_TOKEN_SECRET)
+  },
+  decodeAccessToken:(AccessToken)=>{
+    return jwt.verify(AccessToken,process.env.ACCESS_TOKEN_SECRET)
   }
 };
 
