@@ -54,7 +54,7 @@ const tenantService = {
         role: "Admin",
       });
 
-      return { accessToken };
+      return {tenantId:tenantId, AccessToken: accessToken };
     } catch (err) {
       await client.query("ROLLBACK");
       throw err;

@@ -7,7 +7,7 @@ jest.mock("../../tenantRepositories");
 jest.mock("../../../../utils/jwt");
 jest.mock("../../../../../config/db");
 
-describe("tenantService.tenantRegister", () => {
+describe("UNIT Test for tenant service", () => {
   let client;
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe("tenantService.tenantRegister", () => {
     };
 
     pool.connect.mockResolvedValue(client);
-    client.query.mockResolvedValue(); // for BEGIN / COMMIT
+    client.query.mockResolvedValue(); 
   });
 
   afterEach(() => {
@@ -27,9 +27,9 @@ describe("tenantService.tenantRegister", () => {
   it("should create tenant, roles, membership and return token", async () => {
     tenantRepositories.createTenant.mockResolvedValue(10);
     tenantRepositories.assignRole
-      .mockResolvedValueOnce(1) // Admin
-      .mockResolvedValueOnce(2) // Manager
-      .mockResolvedValueOnce(3); // Member
+      .mockResolvedValueOnce(1) 
+      .mockResolvedValueOnce(2) 
+      .mockResolvedValueOnce(3); 
 
     tenantRepositories.membership.mockResolvedValue({ id: 99 });
 
@@ -51,14 +51,15 @@ describe("tenantService.tenantRegister", () => {
     expect(client.query).toHaveBeenCalledWith("COMMIT");
     expect(client.release).toHaveBeenCalled();
 
-    expect(result.accessToken).toBe("jwt-token");
+    expect(result.tenantId).toBe(10)
+    expect(result.AccessToken).toBe("jwt-token");
   });
 
   it("should rollback if role creation fails", async () => {
     tenantRepositories.createTenant.mockResolvedValue(10);
     tenantRepositories.assignRole
       .mockResolvedValueOnce(1)
-      .mockResolvedValueOnce(null); // Manager fails
+      .mockResolvedValueOnce(null); 
 
     await expect(
       tenantService.tenantRegister(5, "Broken Company")

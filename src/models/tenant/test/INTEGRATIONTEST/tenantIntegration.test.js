@@ -31,7 +31,8 @@ beforeEach(async () => {
       .send({ name: "Acme Inc" })
       .expect(201);
 
-    expect(res.body.data.accessToken).toBeDefined();
+    expect(res.body.data.AccessToken).toBeDefined();
+    expect(res.body.data.tenantId).toBeDefined()
 
     const tenants = await pool.query(`SELECT * FROM tenants`);
     expect(tenants.rowCount).toBe(1);
