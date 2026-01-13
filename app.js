@@ -5,12 +5,14 @@ app.use(express.json())
 app.use(cookieParser())
 
 const AuthRoutes= require('./src/routers/AuthRouters');
-// const requestlogger = require('./src/middleware/Requestlogger');
+const tenantRoutes = require('./src/routers/TenantRouters')
+const requestlogger = require('./src/middleware/Requestlogger');
 const ErrorHandler = require('./src/middleware/ErrorHandler');
 
-// app.use(requestlogger)
+app.use(requestlogger)
 
 app.use('/auth',AuthRoutes)
+app.use('/tenant',tenantRoutes)
 
 app.use(ErrorHandler)
 
