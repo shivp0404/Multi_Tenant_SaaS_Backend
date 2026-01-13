@@ -9,7 +9,8 @@ const TenantsControllers = {
 
     res
       .status(201)
-      .json(ApiResponse.success("Tenant Created", response.accessToken));
+      .json(ApiResponse.success("Tenant Created",response));
   },
+
 };
 module.exports = TenantsControllers;
