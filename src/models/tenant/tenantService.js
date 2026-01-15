@@ -62,6 +62,17 @@ const tenantService = {
       client.release();
     }
   },
+
+  mytenants: async (id)=>{
+    const userid = id
+    if(!userid) throw new AppError("Id didn't Recieved",400)
+    const tenants = await tenantRepositories.mytenants(userid)
+   if(!tenants) throw new AppError('Tenants not Recieved ',500)
+    return tenants
+  }
+  ,
+
+
 };
 
 module.exports = tenantService;
