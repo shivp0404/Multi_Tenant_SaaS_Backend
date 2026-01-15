@@ -7,7 +7,7 @@ jest.mock("../../tenantRepositories");
 jest.mock("../../../../utils/jwt");
 jest.mock("../../../../../config/db");
 
-describe("UNIT Test for tenant service", () => {
+describe("UNIT Test for tenant service Registration", () => {
   let client;
 
   beforeEach(() => {
@@ -101,3 +101,21 @@ describe("UNIT Test for tenant service", () => {
 
   });
 });
+
+describe("UNIT TEST for fetching all tenant",()=>{
+ it("Should throw error when id is not recieved",async()=>{
+   const payload = null;
+   await expect(tenantService.mytenants(payload)).rejects.toThrow("Id didn't Recieved")})
+
+   it("Should throw error when list of tenant is not recieved", async () => {
+  const payload = 1;
+
+  tenantRepositories.mytenants.mockResolvedValue(false);
+
+  await expect(tenantService.mytenants(payload))
+    .rejects
+    .toThrow("Tenants not Recieved");
+});
+
+
+})
