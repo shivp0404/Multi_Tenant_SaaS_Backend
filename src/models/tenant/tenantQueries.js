@@ -16,6 +16,8 @@ const tenantQueries = {
     VALUES ($1, $2, $3, $4)
     RETURNING id
   `,
+
+  mytenants: `SELECT * FROM tenants WHERE createdby = $1`,
 };
 
 module.exports = tenantQueries;
