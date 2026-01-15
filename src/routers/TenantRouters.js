@@ -5,5 +5,7 @@ const TenantsControllers = require("../models/tenant/tenantController")
 router.use(Authenticate)
 
 router.post('/create',TenantsControllers.createTenant);
+router.get('/me',TenantsControllers.mytenants);
+
 
 module.exports = router
