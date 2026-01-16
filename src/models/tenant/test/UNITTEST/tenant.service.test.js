@@ -107,15 +107,28 @@ describe("UNIT TEST for fetching all tenant",()=>{
    const payload = null;
    await expect(tenantService.mytenants(payload)).rejects.toThrow("Id didn't Recieved")})
 
-   it("Should throw error when list of tenant is not recieved", async () => {
+
+
+it("User should fetch tenant successfully", async () => {
   const payload = 1;
 
-  tenantRepositories.mytenants.mockResolvedValue(false);
+  const mockTenants = [{ tenant1: 1, tenant2: 2 }];
 
-  await expect(tenantService.mytenants(payload))
-    .rejects
-    .toThrow("Tenants not Recieved");
+  tenantRepositories.mytenants.mockResolvedValue(mockTenants);
+
+  const result = await tenantService.mytenants(payload);
+
+  expect(result).toEqual(mockTenants);
 });
+
+it("Should return empty array when user has no tenants", async () => {
+  tenantRepositories.mytenants.mockResolvedValue([]);
+
+  const result = await tenantService.mytenants(1);
+
+  expect(result).toEqual([]);
+});
+
 
 
 })
