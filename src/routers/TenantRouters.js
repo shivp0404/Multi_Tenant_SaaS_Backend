@@ -6,6 +6,6 @@ router.use(Authenticate)
 
 router.post('/create',TenantsControllers.createTenant);
 router.get('/me',TenantsControllers.mytenants);
-
+router.post('/:id/invite',TenantsControllers.invite);
 
 module.exports = router
