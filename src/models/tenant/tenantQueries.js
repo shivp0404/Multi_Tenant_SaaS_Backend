@@ -26,7 +26,8 @@ const tenantQueries = {
     RETURNING id
   `,
   
-  findbyrole:`SELECT * FROM roles WHERE tenant_id =$1 AND name=$2`
+  findbyrole:`SELECT * FROM roles WHERE tenant_id =$1 AND name=$2`,
+  getInvitation:`SELECT * FROM user_tenants WHERE user_id = $1 AND status = 'invited'`
 };
 
 module.exports = tenantQueries;

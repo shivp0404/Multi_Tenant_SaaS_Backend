@@ -40,7 +40,10 @@ inviteUser:async(userId,tenantId,RoleId,)=>{
 const res = await pool.query(tenantQueries.inviteUser, [userId, tenantId,RoleId]);
 return res.rows[0] || null;
 },
-
+getInvitation:async(userid)=>{
+  const res = await pool.query(tenantQueries.getInvitation,[userid])
+  return res.rows[0] || null
+}
 
 
      

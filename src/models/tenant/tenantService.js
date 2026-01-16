@@ -50,7 +50,7 @@ const tenantService = {
       await client.query("COMMIT");
 
       const accessToken = await jwtServices.generateAccessToken({
-        id:UserId
+        id:userId
       });
 
       return {tenantId:tenantId, AccessToken: accessToken };
@@ -71,7 +71,7 @@ const tenantService = {
   }
   ,
   inviteUser: async (tenantId, email, roleName) => {
-  console.log(tenantId)
+  
   const user = await AuthRepositories.findbyemail(email);
   if (!user) throw new AppError("User not found", 404);
  
@@ -79,10 +79,15 @@ const tenantService = {
   
   if (!role) throw new AppError("Role not found", 400);
 
-  const invite =  await tenantRepositories.inviteUser(user.id, tenantId, role.id);
+  const invite =  await tenantRepositories.inviteUser(user.id, tenantId, role);
   if(invite.rowsCount === 0) throw new AppError("Invitation not created",500)
 
   return invite
+},
+allinvitation: async(userid)=>{
+  const id = userid;
+  const invitations = await tenantRepositories.getInvitation(id)
+  return invitations
 },
 
 
