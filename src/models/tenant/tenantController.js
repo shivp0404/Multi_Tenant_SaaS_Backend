@@ -26,7 +26,16 @@ const TenantsControllers = {
   const tenantId = req.params.id
   const response = await tenantService.inviteUser(tenantId,email,role);
   res.status(200).json(ApiResponse.success("Send Invitation",response))
- }
+ },
+
+ invitations:async(req,res)=>{
+  const id = req.user.id
+  const response = await tenantService.allinvitation(id)
+  res.status(200).json(ApiResponse.success("All Invitation",response))
+ },
+ 
+
+
 
 
 };
