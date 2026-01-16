@@ -33,6 +33,17 @@ const TenantsControllers = {
   const response = await tenantService.allinvitation(id)
   res.status(200).json(ApiResponse.success("All Invitation",response))
  },
+
+ AcceptInvitations: async(req,res)=>{
+  const invitationid = req.params.id;
+  const response = await tenantService.AcceptInvitation(invitationid)
+  res.status(200).json(ApiResponse.success("Invitation Accepted",response));
+ },
+ RejectInvitations: async(req,res)=>{
+  const invitationid = req.params.id;
+  const response = await tenantService.RejectInvitation(invitationid)
+  res.status(200).json(ApiResponse.success("Invitation Rejected",response));
+ }
  
 
 

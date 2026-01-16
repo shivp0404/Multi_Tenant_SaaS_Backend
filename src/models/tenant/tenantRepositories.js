@@ -43,8 +43,16 @@ return res.rows[0] || null;
 getInvitation:async(userid)=>{
   const res = await pool.query(tenantQueries.getInvitation,[userid])
   return res.rows[0] || null
-}
+},
 
+AcceptInvitation:async(id)=>{
+  const res = await pool.query(tenantQueries.AcceptInvitation,[id])
+  return res.rows[0] || null
+},
+RejectInvitation:async(id)=>{
+  const res = await pool.query(tenantQueries.RejectInvitation,[id])
+  return res.rows[0] || null
+}
 
      
 };

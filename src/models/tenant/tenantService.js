@@ -80,15 +80,27 @@ const tenantService = {
   if (!role) throw new AppError("Role not found", 400);
 
   const invite =  await tenantRepositories.inviteUser(user.id, tenantId, role);
-  if(invite.rowsCount === 0) throw new AppError("Invitation not created",500)
+ 
 
   return invite
 },
+
 allinvitation: async(userid)=>{
   const id = userid;
   const invitations = await tenantRepositories.getInvitation(id)
   return invitations
 },
+
+AcceptInvitation:async(id)=>{
+  const invitationid = id;
+  const invitations = await tenantRepositories.AcceptInvitation(invitationid);
+  return invitations
+},
+RejectInvitation:async(id)=>{
+  const invitationid = id;
+  const invitations = await tenantRepositories.RejectInvitation(invitationid);
+  return invitations
+}
 
 
 };

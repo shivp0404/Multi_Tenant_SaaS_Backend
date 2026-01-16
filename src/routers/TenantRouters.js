@@ -8,4 +8,7 @@ router.post('/create',TenantsControllers.createTenant);
 router.get('/me',TenantsControllers.mytenants);
 router.post('/:id/invite',TenantsControllers.invite);
 router.get('/invitations',TenantsControllers.invitations)
+router.post('/invitations/:id/accept',TenantsControllers.AcceptInvitations)
+router.post('/invitations/:id/reject',TenantsControllers.RejectInvitations)
+
 module.exports = router
