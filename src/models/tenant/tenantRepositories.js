@@ -1,4 +1,5 @@
 const tenantQueries = require("./tenantQueries");
+const pool = require("../../../config/db")
 
 const tenantRepositories = {
   createTenant: async (client, name, userId) => {
@@ -24,6 +25,15 @@ const tenantRepositories = {
     );
     return result.rows[0] || null;
   },
+
+  mytenants:async(userid)=>{
+    const result = await pool.query(tenantQueries.mytenants,[userid])
+    return result.rows || null;
+  }
+,
+
+
+     
 };
 
 module.exports = tenantRepositories;
