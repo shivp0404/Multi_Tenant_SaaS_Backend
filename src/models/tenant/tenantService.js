@@ -2,6 +2,7 @@ const AppError = require("../../utils/AppError");
 const jwtServices = require("../../utils/jwt");
 const tenantRepositories = require("./tenantRepositories");
 const pool = require("../../../config/db");
+const AuthRepositories = require("../Auth/Auth.repositories")
 
 const tenantService = {
   tenantRegister: async (userId, tenantName) => {
@@ -49,9 +50,7 @@ const tenantService = {
       await client.query("COMMIT");
 
       const accessToken = await jwtServices.generateAccessToken({
-        userId,
-        tenantId,
-        role: "Admin",
+        id:UserId
       });
 
       return {tenantId:tenantId, AccessToken: accessToken };
@@ -71,6 +70,20 @@ const tenantService = {
     return tenants
   }
   ,
+  inviteUser: async (tenantId, email, roleName) => {
+  console.log(tenantId)
+  const user = await AuthRepositories.findbyemail(email);
+  if (!user) throw new AppError("User not found", 404);
+ 
+  const role = await tenantRepositories.findbyrole(tenantId, roleName);
+  
+  if (!role) throw new AppError("Role not found", 400);
+
+  const invite =  await tenantRepositories.inviteUser(user.id, tenantId, role.id);
+  if(invite.rowsCount === 0) throw new AppError("Invitation not created",500)
+
+  return invite
+},
 
 
 };
