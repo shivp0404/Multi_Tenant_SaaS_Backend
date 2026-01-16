@@ -27,7 +27,9 @@ const tenantQueries = {
   `,
   
   findbyrole:`SELECT * FROM roles WHERE tenant_id =$1 AND name=$2`,
-  getInvitation:`SELECT * FROM user_tenants WHERE user_id = $1 AND status = 'invited'`
+  getInvitation:`SELECT * FROM user_tenants WHERE user_id = $1 AND status = 'invited'`,
+  AcceptInvitation:`UPDATE user_tenants SET status ='active' WHERE id = $1`,
+  RejectInvitation:`UPDATE user_tenants SET status ='rejected' WHERE id = $1`
 };
 
 module.exports = tenantQueries;
