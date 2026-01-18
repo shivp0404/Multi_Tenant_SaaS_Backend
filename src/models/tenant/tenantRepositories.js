@@ -34,17 +34,17 @@ const tenantRepositories = {
 
 findbyrole:async(tenantid,name)=>{
   const result = await pool.query(tenantQueries.findbyrole,[tenantid,name])
-  return result.rows[0]
+  return result.rows
 },
 
 inviteUser:async(userId,tenantId,RoleId,)=>{
 const res = await pool.query(tenantQueries.inviteUser, [userId, tenantId,RoleId]);
-return res.rows[0]
+return res.rows
 },
 
 getInvitation:async(userid)=>{
   const res = await pool.query(tenantQueries.getInvitation,[userid])
-  return res.rows[0]
+  return res.rows
 },
 
 AcceptInvitation:async(id)=>{
