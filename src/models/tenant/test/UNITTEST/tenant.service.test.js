@@ -154,3 +154,14 @@ describe("Unit test for inviting a user",()=>{
   })
 
 })
+
+describe("Unit test for to see all invitation",()=>{
+    test("Should throw error if id not found",async()=>{
+    await expect(tenantService.allinvitation(null)).rejects.toThrow("Id not found");
+  })
+   test("Invitation Fetch Successfuly",async()=>{
+    tenantRepositories.getInvitation.mockResolvedValue([{id:1}])
+    const result = await tenantService.allinvitation("1",)
+    expect(result).toEqual([{id:1}])
+  })
+})
