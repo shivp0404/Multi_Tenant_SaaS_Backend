@@ -2,12 +2,14 @@ const tenantService = require("../../tenantService");
 const tenantRepositories = require("../../tenantRepositories");
 const jwtServices = require("../../../../utils/jwt");
 const pool = require("../..//../../../config/db");
+const AuthRepositories = require("../../../Auth/Auth.repositories")
 
 jest.mock("../../tenantRepositories");
 jest.mock("../../../../utils/jwt");
 jest.mock("../../../../../config/db");
+jest.mock("../../../Auth/Auth.repositories")
 
-describe("UNIT Test for tenant service Registration", () => {
+describe("Unit Test for tenant service Registration", () => {
   let client;
 
   beforeEach(() => {
@@ -15,7 +17,6 @@ describe("UNIT Test for tenant service Registration", () => {
       query: jest.fn(),
       release: jest.fn(),
     };
-
     pool.connect.mockResolvedValue(client);
     client.query.mockResolvedValue(); 
   });
@@ -102,7 +103,7 @@ describe("UNIT Test for tenant service Registration", () => {
   });
 });
 
-describe("UNIT TEST for fetching all tenant",()=>{
+describe("Unit TEST for fetching all tenant",()=>{
  it("Should throw error when id is not recieved",async()=>{
    const payload = null;
    await expect(tenantService.mytenants(payload)).rejects.toThrow("Id didn't Recieved")})
@@ -130,5 +131,26 @@ it("Should return empty array when user has no tenants", async () => {
 });
 
 
+
+})
+
+describe("Unit test for inviting a user",()=>{
+  test("Should throw error if user not found",async()=>{
+    AuthRepositories.findbyemail.mockResolvedValue(false)
+    await expect(tenantService.inviteUser("1","test@g.com","Admin")).rejects.toThrow("User not found");
+  })
+  test("Should throw error if role id is not defined found ",async()=>{
+    AuthRepositories.findbyemail.mockResolvedValue(true);
+    tenantRepositories.findbyrole.mockResolvedValue(false);
+    await expect(tenantService.inviteUser('1',"Test@g.com","Admin")).rejects.toThrow("Role not found");
+  })
+  
+  test("Invitation send successfully",async()=>{
+    AuthRepositories.findbyemail.mockResolvedValue({id:"1"})
+    tenantRepositories.findbyrole.mockResolvedValue("45737829");
+    tenantRepositories.inviteUser.mockResolvedValue("ld39023kd");
+    const result = await tenantService.inviteUser("1","Test@g.com","Admin")
+    expect(result).toBe("ld39023kd")
+  })
 
 })
