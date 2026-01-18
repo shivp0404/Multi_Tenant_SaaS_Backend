@@ -141,3 +141,38 @@ describe("Integration test for fetching all tenants", () => {
 });
 
 
+
+describe("Integration test for fetching all Invitations", () => {
+  let userId;
+  let token;
+  beforeEach(async () => {
+    await pool.query("DELETE FROM user_tenants");
+    await pool.query("DELETE FROM roles");
+    await pool.query("DELETE FROM tenants");
+    await pool.query("DELETE FROM users");
+
+    const email = `test-${random()}@example.com`;
+    const name = `test-${random()}`;
+
+    const user = await pool.query(
+      `INSERT INTO users (name,email,password) VALUES ($1,$2,$3) RETURNING id`,
+      [name, email, "Hashed"],
+    );
+
+    userId = user.rows[0].id;
+    token = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET);
+  });
+  afterAll(async () => {
+    await pool.end();
+  });
+
+  test("Test when no tenant are present", async () => {
+    const res = await request(app)
+      .get("/tenant/invitations")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200);
+    expect(res.body.message).toBe("All Invitation");
+    expect(res.body.data).toBeDefined();
+    expect(res.body.data.length).toBe(0);
+  });
+});
