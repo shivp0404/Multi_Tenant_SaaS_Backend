@@ -126,15 +126,15 @@ describe("Unit test for inviting a user",()=>{
     await expect(tenantService.inviteUser("1","test@g.com","Admin")).rejects.toThrow("User not found");
   })
   test("Should throw error if role id is not defined found ",async()=>{
-    AuthRepositories.findbyemail.mockResolvedValue(true);
-    tenantRepositories.findbyrole.mockResolvedValue(false);
+    AuthRepositories.findbyemail.mockResolvedValue(1);
+    tenantRepositories.findbyrole.mockResolvedValue([]);
     await expect(tenantService.inviteUser('1',"Test@g.com","Admin")).rejects.toThrow("Role not found");
   })
   
   test("Invitation send successfully",async()=>{
     AuthRepositories.findbyemail.mockResolvedValue({id:"1"})
-    tenantRepositories.findbyrole.mockResolvedValue("45737829");
-    tenantRepositories.inviteUser.mockResolvedValue("ld39023kd");
+    tenantRepositories.findbyrole.mockResolvedValue([{id:"45737829"}]);
+    tenantRepositories.inviteUser.mockResolvedValue([{id:"ld39023kd"}]);
     const result = await tenantService.inviteUser("1","Test@g.com","Admin")
     expect(result).toBe("ld39023kd")
   })
