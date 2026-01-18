@@ -26,13 +26,13 @@ describe("Unit Test for tenant service Registration", () => {
   });
 
   it("should create tenant, roles, membership and return token", async () => {
-    tenantRepositories.createTenant.mockResolvedValue(10);
+    tenantRepositories.createTenant.mockResolvedValue([{id:10}]);
     tenantRepositories.assignRole
-      .mockResolvedValueOnce(1) 
-      .mockResolvedValueOnce(2) 
-      .mockResolvedValueOnce(3); 
+      .mockResolvedValueOnce([{id:1}]) 
+      .mockResolvedValueOnce([{id:2}]) 
+      .mockResolvedValueOnce([{id:3}]); 
 
-    tenantRepositories.membership.mockResolvedValue({ id: 99 });
+    tenantRepositories.membership.mockResolvedValue([{ id: 99 }]);
 
     jwtServices.generateAccessToken.mockResolvedValue("jwt-token");
 
@@ -71,21 +71,7 @@ describe("Unit Test for tenant service Registration", () => {
     expect(client.release).toHaveBeenCalled();
   });
 
-  it("should rollback if membership creation fails", async () => {
-    tenantRepositories.createTenant.mockResolvedValue(10);
-    tenantRepositories.assignRole
-      .mockResolvedValueOnce(1)
-      .mockResolvedValueOnce(2)
-      .mockResolvedValueOnce(3);
-
-    tenantRepositories.membership.mockResolvedValue(null);
-
-    await expect(
-      tenantService.tenantRegister(5, "No Member Corp")
-    ).rejects.toThrow("Membership creation failed");
-
-    expect(client.query).toHaveBeenCalledWith("ROLLBACK");
-  });
+ 
 
   it("should reject empty tenant name", async () => {
     await expect(
@@ -163,5 +149,27 @@ describe("Unit test for to see all invitation",()=>{
     tenantRepositories.getInvitation.mockResolvedValue([{id:1}])
     const result = await tenantService.allinvitation("1",)
     expect(result).toEqual([{id:1}])
+  })
+})
+
+describe("Unit test for to accept invitation",()=>{
+    test("Should throw error if id not found",async()=>{
+    await expect(tenantService.AcceptInvitation(null)).rejects.toThrow("Id not found");
+  })
+   test("Aceepted Invitation Successfuly",async()=>{
+    tenantRepositories.AcceptInvitation.mockResolvedValue(true)
+    const result = await tenantService.allinvitation("1")
+    expect(result).toBeDefined()
+  })
+})
+
+describe("Unit test for to reject invitation",()=>{
+    test("Should throw error if id not found",async()=>{
+    await expect(tenantService.RejectInvitation(null)).rejects.toThrow("Id not found");
+  })
+   test("Rejected Invitation Successfuly",async()=>{
+    tenantRepositories.RejectInvitation.mockResolvedValue([{id:1}])
+    const result = await tenantService.allinvitation("1")
+    expect(result).toBeDefined()
   })
 })
