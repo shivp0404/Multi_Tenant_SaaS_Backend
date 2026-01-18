@@ -67,10 +67,10 @@ const tenantService = {
   mytenants: async (id) => {
     const userid = id;
     if (!userid) throw new AppError("Id didn't Recieved", 400);
-    const tenants = await tenantRepositories.mytenants(userid);
-    if (!tenants) throw new AppError("Tenants not Recieved ", 500);
+    const tenants = await tenantRepositories.mytenants(userid);  
     return tenants;
   },
+
   inviteUser: async (tenantId, email, roleName) => {
     if (!tenantId || !email || !roleName)
       throw new AppError("Payload is missing", 404);
@@ -78,16 +78,17 @@ const tenantService = {
     const user = await AuthRepositories.findbyemail(email);
     if (!user) throw new AppError("User not found", 404);
 
+    
     const role = await tenantRepositories.findbyrole(tenantId, roleName);
 
-    if (role.length === 0) throw new AppError("Role not found", 400);
-
+    if (role.length === 0) throw new AppError("Role not found", 404);
+    
     const invite = await tenantRepositories.inviteUser(
       user.id,
       tenantId,
       role[0].id
     );
-
+      
     if (invite.length === 0) throw new AppError("Invitation not send");
 
     return invite[0].id;
@@ -98,7 +99,7 @@ const tenantService = {
   
     if (!userid) throw new AppError("Id not found", 400);
     const invitations = await tenantRepositories.getInvitation(id);
-    if(invitations.length === 0) throw new AppError("No invitation to show",500);
+
     return invitations;
   },
 
