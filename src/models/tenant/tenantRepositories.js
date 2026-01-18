@@ -7,7 +7,7 @@ const tenantRepositories = {
       tenantQueries.createTenant,
       [name, userId]
     );
-    return result.rows[0]?.id || null;
+    return result.rows
   },
 
   assignRole: async (client, tenantId, role) => {
@@ -15,7 +15,7 @@ const tenantRepositories = {
       tenantQueries.assignDefaultRoleforTenants,
       [tenantId, role]
     );
-    return result.rows[0]?.id || null;
+    return result.rows 
   },
 
   membership: async (client, userId, tenantId, roleId, status = null) => {
@@ -23,35 +23,36 @@ const tenantRepositories = {
       tenantQueries.membership,
       [userId, tenantId, roleId, status]
     );
-    return result.rows[0] || null;
+    return result.rows
   },
 
   mytenants:async(userid)=>{
     const result = await pool.query(tenantQueries.mytenants,[userid])
-    return result.rows || null;
+    return result.rows 
   }
 ,
 
 findbyrole:async(tenantid,name)=>{
   const result = await pool.query(tenantQueries.findbyrole,[tenantid,name])
-  return result.rows[0].id || null;
+  return result.rows[0]
 },
+
 inviteUser:async(userId,tenantId,RoleId,)=>{
 const res = await pool.query(tenantQueries.inviteUser, [userId, tenantId,RoleId]);
-return res.rows[0] || null;
+return res.rows[0]
 },
+
 getInvitation:async(userid)=>{
   const res = await pool.query(tenantQueries.getInvitation,[userid])
-  return res.rows[0] || null
+  return res.rows[0]
 },
 
 AcceptInvitation:async(id)=>{
-  const res = await pool.query(tenantQueries.AcceptInvitation,[id])
-  return res.rows[0] || null
+  return await pool.query(tenantQueries.AcceptInvitation,[id])
+
 },
 RejectInvitation:async(id)=>{
-  const res = await pool.query(tenantQueries.RejectInvitation,[id])
-  return res.rows[0] || null
+  return await pool.query(tenantQueries.RejectInvitation,[id])
 }
 
      
