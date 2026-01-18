@@ -16,14 +16,16 @@ const tenantService = {
         throw new AppError("Tenant name is required", 400);
       }
 
-      const tenantId = await tenantRepositories.createTenant(
+      const tenant = await tenantRepositories.createTenant(
         client,
         tenantName.trim(),
         userId
       );
-
-      if (!tenantId) throw new AppError("Tenant not created", 500);
-
+    
+      if (tenant.length === 0) throw new AppError("Tenant not created", 500);
+      const tenantId = tenant[0].id
+  
+  
       const roles = ["Admin", "Manager", "Member"];
       const roleIds = {};
 
@@ -33,9 +35,10 @@ const tenantService = {
           tenantId,
           role
         );
-        if (!roleId) throw new AppError(`Role ${role} failed`, 500);
-        roleIds[role] = roleId;
+        if (roleId.length === 0) throw new AppError(`Role ${role} failed`, 500);
+        roleIds[role] = roleId[0].id;
       }
+
 
       const membership = await tenantRepositories.membership(
         client,
@@ -44,8 +47,8 @@ const tenantService = {
         roleIds.Admin,
         "active"
       );
-
-      if (!membership) throw new AppError("Membership creation failed", 500);
+      
+      if (membership.length === 0) throw new AppError("Membership creation failed", 500);
 
       await client.query("COMMIT");
 
@@ -70,6 +73,7 @@ const tenantService = {
     return tenants
   }
   ,
+  
   inviteUser: async (tenantId, email, roleName) => {
   
   const user = await AuthRepositories.findbyemail(email);
@@ -80,24 +84,27 @@ const tenantService = {
   if (!role) throw new AppError("Role not found", 400);
 
   const invite =  await tenantRepositories.inviteUser(user.id, tenantId, role);
- 
 
   return invite
 },
 
 allinvitation: async(userid)=>{
   const id = userid;
+  if(!userid) throw new AppError("Id not found",400)
   const invitations = await tenantRepositories.getInvitation(id)
   return invitations
 },
 
 AcceptInvitation:async(id)=>{
   const invitationid = id;
+  if(!id) throw new AppError("Id not found")
   const invitations = await tenantRepositories.AcceptInvitation(invitationid);
   return invitations
 },
+
 RejectInvitation:async(id)=>{
   const invitationid = id;
+   if(!id) throw new AppError("Id not found")
   const invitations = await tenantRepositories.RejectInvitation(invitationid);
   return invitations
 }
