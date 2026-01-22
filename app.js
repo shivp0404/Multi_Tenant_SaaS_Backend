@@ -14,7 +14,7 @@ app.use(requestlogger)
 
 app.use('/auth',AuthRoutes)
 app.use('/tenant',tenantRoutes)
-app.use('/tenant/core/',BusineesRoutes)
+app.use('/business',BusineesRoutes)
 
 app.use(ErrorHandler)
 
