@@ -1,196 +1,139 @@
-🏢 Multi-Tenant SaaS Backend
+# 🏢 Multi-Tenant SaaS Backend
 
-Node.js · PostgreSQL
+**💻 Node.js · 🐘 PostgreSQL**
 
-A production-grade, multi-tenant SaaS backend foundation where a single backend securely serves multiple organizations with strict tenant isolation, RBAC, and invitation-based onboarding.
+A production-grade, multi-tenant SaaS backend foundation where a single backend securely serves multiple organizations with strict tenant isolation, RBAC, and invitation-based onboarding.  
 
-Architecture-first. Security-first. Feature-complete by design, not by accident.
+**✨ Architecture-first. Security-first. Feature-complete by design, not by accident.**
 
-🔍 What This Demonstrates (Quick Scan)
+---
 
-✅ Correct multi-tenant modeling
+## 🔍 What This Demonstrates (Quick Scan)
 
-✅ Permission-based RBAC (DB-driven)
+- ✅ Correct multi-tenant modeling  
+- 🔑 Permission-based RBAC (DB-driven)  
+- ✉️ Invitation-based org membership  
+- 🏷️ Tenant-scoped queries everywhere  
+- 🔒 Stateless authentication  
+- ❌ CRUD completeness (intentionally deferred)
 
-✅ Invitation-based org membership
+---
 
-✅ Tenant-scoped queries everywhere
+## 🧠 Core Rule
 
-✅ Stateless authentication
+**Authentication →** who you are  
+**Authorization →** what you can do  
+**Tenant ID →** where you can do it
 
-❌ CRUD completeness (intentionally deferred)
+---
 
-🧠 Core Rule
+## 🧱 Architecture Overview
 
-Authentication → who you are
-Authorization → what you can do
-Tenant ID → where you can do it
-
-🧱 Architecture Overview
 Auth (identity only)
-        ↓
+↓
 Tenants (organizations)
-        ↓
+↓
 Memberships (user_tenants)
-        ↓
+↓
 Roles → Permissions (RBAC)
-        ↓
+↓
 Business Services (Tasks)
 
-🔐 Authentication
-<details> <summary><strong>Details</strong></summary>
 
-JWT-based authentication
+---
 
-Short-lived access tokens + refresh tokens
+## 🔐 Authentication
 
-Secure password hashing
+- 🔑 JWT-based authentication  
+- ⏱️ Short-lived access tokens + refresh tokens  
+- 🔒 Secure password hashing  
 
-Token payload
+**Token payload:**
 
 { "userId": "<uuid>" }
-
-
 🚫 No tenant, role, or permission data in tokens
 ✔ All authorization decisions are database-driven
 
-</details>
-🏢 Tenants & Memberships
-<details> <summary><strong>Details</strong></summary>
+## 🏢 Tenants & Memberships
+👥 Users can belong to multiple organizations
 
-Users can belong to multiple organizations
+✉️ Invitation-based onboarding
 
-Invitation-based onboarding
+Membership lifecycle: invited → active → rejected
 
-Membership lifecycle
+Core tables: tenants, user_tenants, roles
 
-invited → active → rejected
+## 🛂 RBAC (Role-Based Access Control)
+🌐 Permissions are global
 
+🏢 Roles are tenant-scoped
 
-Core tables
+✅ Code checks permissions, never roles
 
-tenants
-
-user_tenants
-
-roles
-
-</details>
-🛂 RBAC (Role-Based Access Control)
-<details> <summary><strong>Details</strong></summary>
-
-Permissions are global
-
-Roles are tenant-scoped
-
-Code checks permissions, never roles
-
-Example permissions
-
-tenant.invite
-
-task.create
-
-task.view
-
-task.delete
-
-Middleware
-
-can("task.create")
-
+Middleware: can("task.create")
 
 ✔ Immediate permission revocation
 ✔ No hard-coded authorization logic
 
-</details>
-📦 Business Service: Tasks
-<details> <summary><strong>Details</strong></summary>
 
-APIs
+## Guarantees:
 
-POST   /tenants/:id/tasks
-GET    /tenants/:id/tasks
-DELETE /tenants/:id/tasks/:taskId
+🏷️ Tenant isolation enforced at query level
 
+🔑 RBAC enforced on every request
 
-Guarantees
+🆔 UUID primary keys
 
-Tenant isolation enforced at query level
+⚠ Task update is intentionally deferred (see Scope)
 
-RBAC enforced on every request
-
-Soft deletes
-
-UUID primary keys
-
-⚠ Task update is intentionally deferred (see Scope).
-
-</details>
-🗂 Project Structure
-<details> <summary><strong>Details</strong></summary>
-src/
+## 🗂 Project Structure
+```
+ src/
  ├─ modules/
  │   ├─ auth/
  │   ├─ tenant/
  │   ├─ business/
  ├─ middlewares/
  ├─ utils/
- └─ routers/
+ └─ routers/  
 
+```
+ Structure convention: routes → controllers → services → repositories → queries
 
-Each module follows:
+Designed for ✅ testability and ✅ extension.
 
-routes → controllers → services → repositories → queries
+## 🧪 Testing Strategy
+🧪 Integration tests: Supertest + real DB
 
+🧩 Unit tests: service layer (repositories mocked)
 
-Designed for testability and extension.
+🔑 RBAC validated via real HTTP flows
 
-</details>
-🧪 Testing Strategy
-<details> <summary><strong>Details</strong></summary>
+Scope decision: Tenant & Membership flows are integration-tested.
+Business (Tasks) integration tests are not duplicated, as they reuse the same authorization and tenant-scoping logic.
+This is a deliberate engineering tradeoff.
 
-Integration tests: Supertest + real DB
+### 📌 Scope & Non-Goals (Current Phase)
+✏️ Task update API
 
-Unit tests: service layer (repositories mocked)
+🧪 Duplicate integration tests for structurally identical services
 
-RBAC validated via real HTTP flows
-
-Scope decision
-
-Tenant & Membership flows are integration-tested
-
-Business (Tasks) integration tests are not duplicated, as they reuse the same authorization and tenant-scoping logic already validated elsewhere
-
-This is an intentional engineering tradeoff.
-
-</details>
-📌 Scope & Non-Goals (Current Phase)
-<details> <summary><strong>Why some things are missing</strong></summary>
-
-Task update API
-
-Duplicate integration tests for structurally identical services
-
-The focus is on multi-tenant safety, RBAC correctness, and authorization guarantees, not CRUD completeness.
-
+Focus is on multi-tenant safety, RBAC correctness, and authorization guarantees, not CRUD completeness.
 These features can be added without architectural changes.
 
-</details>
-🛡 Security Guarantees
+## 🛡 Security Guarantees
 
-Tenant-scoped queries everywhere
+🏷️ Tenant-scoped queries everywhere
 
-No hard-coded roles
+❌ No hard-coded roles
 
-Immediate permission revocation
+🔑 Immediate permission revocation
 
-Multi-organization users supported
+👥 Multi-organization users supported
 
-Stateless backend (no server-side active tenant)
+🔒 Stateless backend (no server-side active tenant)
 
-🚀 Status
-
+## 🚀 Status
 ✅ Core architecture complete
 
 ✅ Multi-tenant isolation enforced
@@ -199,6 +142,6 @@ Stateless backend (no server-side active tenant)
 
 ✅ Ready for production-level extension
 
-🧠 Final Note
+## 🧠 Final Note
 
 This repository represents a production-grade SaaS backend foundation, intentionally scoped to validate architectural correctness before feature expansion.
