@@ -8,6 +8,14 @@ const BusinessRepository = {
     validateAssignUser: async(tenantid,userid)=>{
         const result = await pool.query(BusinessQueries.validateAssignUser,[tenantid,userid])
         return result.rows
+    },
+    fetchTask: async(userid,tenantid)=>{
+        const result = await pool.query(BusinessQueries.fetchTask,[userid,tenantid])
+        return result.rows
+    },
+    deleteTask: async(taskid,tenantid)=>{
+        
+         return await pool.query(BusinessQueries.deleteTask,[taskid,tenantid])
     }
 }
 
