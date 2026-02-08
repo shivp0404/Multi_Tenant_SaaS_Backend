@@ -31,7 +31,6 @@ const TenantsControllers = {
  invitations:async(req,res)=>{
   const id = req.user.id
   const response = await tenantService.allinvitation(id)
-  console.log(response)
   res.status(200).json(ApiResponse.success("All Invitation",response))
  },
 

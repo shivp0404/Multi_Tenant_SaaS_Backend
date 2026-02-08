@@ -7,8 +7,8 @@ router.use(Authenticate)
 
 router.post('/create',TenantsControllers.createTenant);
 router.get('/me',TenantsControllers.mytenants);
-router.post('/:id/invite',TenantsControllers.invite);
-router.get('/invitations',Authorization('tenant.invite'),TenantsControllers.invitations)
+router.post('/:id/invite',Authorization('tenant.invite'),TenantsControllers.invite);
+router.get('/invitations',TenantsControllers.invitations)
 router.post('/invitations/:id/accept',TenantsControllers.AcceptInvitations)
 router.post('/invitations/:id/reject',TenantsControllers.RejectInvitations)
 
