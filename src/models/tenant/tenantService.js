@@ -1,12 +1,12 @@
 const AppError = require("../../utils/AppError");
 const jwtServices = require("../../utils/jwt");
 const tenantRepositories = require("./tenantRepositories");
-const pool = require("../../../config/db");
+const { getPool } = require("../../../config/db");
 const AuthRepositories = require("../Auth/Auth.repositories");
 
 const tenantService = {
   tenantRegister: async (userId, tenantName) => {
-    const client = await pool.connect();
+    const client = getPool();
 
     try {
       await client.query("BEGIN");

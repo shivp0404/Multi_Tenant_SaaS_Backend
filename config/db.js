@@ -1,19 +1,38 @@
-const {Pool} = require("pg");
+const { Pool } = require("pg");
 
-require('dotenv').config()
-const pool = new Pool({
-connectionString:process.env.Database_URL,
-max:10,
-idleTimeoutMillis:30000,
-connect_timeoutMillis:2000
-})
+let pool = null;
 
-pool.on("connect",()=>{
-    console.log("Database Connected")
-})
+function initPool(databaseUrl) {
+  if (!databaseUrl) {
+    throw new Error("Database_URL is missing");
+  }
 
-pool.on("error",()=>{
-    console.log("Unable to Connect Database")
-})
+  if (pool) return pool;
 
-module.exports = pool
+  pool = new Pool({
+    connectionString: databaseUrl,
+    // ssl: { rejectUnauthorized: false },
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
+
+  pool.on("connect", () => {
+    console.log("Database connected");
+  });
+
+  pool.on("error", (err) => {
+    console.error("Postgres error:", err);
+  });
+
+  return pool;
+}
+
+function getPool() {
+  if (!pool) {
+    throw new Error("Database pool not initialized");
+  }
+  return pool;
+}
+
+module.exports = { initPool, getPool };
