@@ -44,8 +44,21 @@ const TenantsControllers = {
   const invitationid = req.params.id;
   const response = await tenantService.RejectInvitation(invitationid)
   res.status(200).json(ApiResponse.success("Invitation Rejected",response));
+ },
+
+ GetTenant: async(req,res)=>{
+  const tenantid = req.params.id;
+  const response = await tenantService.GetTenant(tenantid)
+  res.status(200).json(ApiResponse.success("Tenant Profile",response))
+ },
+
+ GetUser: async(req,res)=>{
+ const tenantId = req.params.id;
+  
+  const userid = req.user.id
+  const response = await tenantService.GetUser(tenantId,userid)
+  res.status(200).json(ApiResponse.success("User",response))
  }
- 
 
 
 
