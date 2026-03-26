@@ -8,7 +8,7 @@ const Port = process.env.PORT || 3000
 
 const StartServer = async() => {
   try {
-      const pool = initPool(process.env.Database_URL);
+      const pool = initPool(process.env.DATABASE_URL); // chage Database_URL ->
 
     // Explicit health check
     await pool.query("SELECT 1");
