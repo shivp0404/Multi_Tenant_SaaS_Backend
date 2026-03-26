@@ -140,9 +140,12 @@ const rolePermissionMap = {
   ],
 
   Manager: [
+    "tenant:create",
     "tenant:read",
     "user:invite",
     "user:read_all",
+    "user:update",
+    "user:delete"
   ],
 
   Member: [

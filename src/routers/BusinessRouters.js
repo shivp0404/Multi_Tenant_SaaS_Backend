@@ -7,7 +7,7 @@ router.use(Authenticate)
 
 router.post('/:id/createtask',Authorization('tenant:create'),BusinessControllers.createTask)
 router.get('/:id/tasks',Authorization('tenant:read'),BusinessControllers.fetchTask)
-router.post('/:id1/:id2/deletetask',Authorization('task.view'),BusinessControllers.deleteTask)
+router.post('/:id1/:id2/deletetask',Authorization('user:delete'),BusinessControllers.deleteTask)
 router.get('/alltask',BusinessControllers.alltask)
 router.get('/:id/tenanttask',BusinessControllers.TenantTask)
 
