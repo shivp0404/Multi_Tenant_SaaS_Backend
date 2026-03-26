@@ -19,7 +19,16 @@ const BusinessRepository = {
     deleteTask: async(taskid,tenantid)=>{
         const pool = getPool();
         return await pool.query(BusinessQueries.deleteTask,[taskid,tenantid])
-    }
+    },
+    alltask:async(id)=>{
+        const pool = getPool();
+        return await pool.query(BusinessQueries.alltask,[id])
+    }, 
+      TenantTask: async(tenantid)=>{
+        const pool = getPool();
+        const result = await pool.query(BusinessQueries.TenantTask,[tenantid])
+        return result.rows
+    },
 }
 
 module.exports = BusinessRepository

@@ -60,6 +60,16 @@ deleteTask:async(taskid,tenantid)=>{
   const task = await BusinessRepository.deleteTask(taskid,tenantid)
 
 return task;
+},
+alltask:async(id)=>{
+  if(!id) throw new AppError("Task not found",400);
+  const tasks = await BusinessRepository.alltask(id);
+  return tasks
+},
+TenantTask: async(tenantid)=>{
+  if(!tenantid) throw new AppError("tenant id not found",400)
+  const task = await BusinessRepository.TenantTask(tenantid)
+ return task
 }
 
 

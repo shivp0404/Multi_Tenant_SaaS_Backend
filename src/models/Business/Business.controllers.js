@@ -20,6 +20,17 @@ const BusinessControllers ={
         const tenantid = req.params.id1
         const response = await BusineesService.deleteTask(taskid,tenantid)
         res.status(200).json(ApiResponse.success("Task Deleted",response))
+    },
+    alltask:async(req,res)=>{
+        const id = req.user.id
+       
+        const response = await BusineesService.alltask(id);
+        res.status(200).json(ApiResponse.success("All Task",response))
+    },
+      TenantTask:async(req,res)=>{
+        const tenantId = req.params.id
+        const response = await BusineesService.TenantTask(tenantId)
+        res.status(200).json(ApiResponse.success("Tasks",response))
     }
 }
 module.exports = BusinessControllers
