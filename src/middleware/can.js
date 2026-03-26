@@ -14,7 +14,7 @@ const can = (permission) => {
 
       const tenantId =
         req.params.id || req.body.tenant_id || req.query.tenantId;
-        console.log(userId,tenantId)
+        
 
       if (!tenantId) {
         return next(new AppError("Tenant id missing", 400));
