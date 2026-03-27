@@ -20,14 +20,16 @@ createTask: async (tenantId, userId, data) => {
   if (!assignedUser) {
     throw new AppError("Assigned user not found", 404);
   }
-
+console.log(assignedUser)
   
   const isUserInTenant = await BusinessRepository.validateAssignUser(
     tenantId,
     assignedUser.id
   );
 
-  if (!isUserInTenant) {
+
+
+  if (isUserInTenant.length == 0) {
     throw new AppError("User is not registered in tenant", 403);
   }
 
