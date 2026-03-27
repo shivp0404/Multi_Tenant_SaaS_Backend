@@ -6,7 +6,6 @@ const AuthControllers ={
         try{
         const payloads = req.body;
         const result = await AuthServices.register(payloads);
-        console.log (result)
         return res.status(201).json({success:true,message:result.message})
         }
         catch(e){
@@ -20,8 +19,8 @@ const AuthControllers ={
         
         res.cookie("RefreshToken",result.RefreshToken,{
             httpOnly:true,
-            secure:false,
-            sameSite:"Lax",
+            secure:true,
+            sameSite:"none",
             // Expires:"30m"
         })
         return res.status(200).json(ApiResponse.success("Login Successfull",{name:result.name,accesstoken:result.AccessToken}))
@@ -31,8 +30,8 @@ const AuthControllers ={
         const result = await AuthServices.logout(refreshToken)
         res.clearCookie("RefreshToken",{
             httpOnly:true,
-            secure:false,
-            sameSite:"Lax",
+            secure:true,
+            sameSite:"none",
         })
 
         res.status(200).json(ApiResponse.success(result.message));
@@ -43,8 +42,8 @@ const AuthControllers ={
         
         res.cookie("RefreshToken",result.RefreshToken,{
             httpOnly:true,
-            secure:false,
-            sameSite:"Lax",
+            secure:true,
+            sameSite:"none",
             // Expires:"30m"
         })
         return res.status(200).json(ApiResponse.success("Refresh Successfull",{accesstoken:result.accessToken}))
