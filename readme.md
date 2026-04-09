@@ -2,7 +2,7 @@
 
 **💻 Node.js · 🐘 PostgreSQL**
 
-A production-grade, multi-tenant SaaS backend foundation where a single backend securely serves multiple organizations with strict tenant isolation, RBAC, and invitation-based onboarding.  
+A production-grade oriented, multi-tenant SaaS backend foundation where a single backend securely serves multiple organizations with strict tenant isolation, RBAC, and invitation-based onboarding.  
 
 **✨ Architecture-first. Security-first. Feature-complete by design, not by accident.**
 
